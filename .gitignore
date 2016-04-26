@@ -1,5 +1,6 @@
 # Die vom Compiler veränderten Daten, die nicht aktiv vom User editiert wurden.
 CGTutorial/
+
 # Ausnahmen
 !*.cpp
 !*.hpp
