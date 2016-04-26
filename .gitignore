@@ -1,5 +1,39 @@
 # Die vom Compiler veränderten Daten, die nicht aktiv vom User editiert wurden.
-CGTutorial/Debug/*
-CGTutorial/.vs/*
+CGTutorial/
+# Ausnahmen
+!*.cpp
+!*.hpp
+!*.fragmentshader
+!*.vertexshader
+
 *.db
 *log
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
