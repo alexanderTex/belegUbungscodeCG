@@ -22,8 +22,11 @@ using namespace glm;
 // Wuerfel und Kugel
 #include "objects.hpp"
 
-
 #include "objloader.hpp"
+
+// Aufgabe 7
+#include "texture.hpp"
+
 
 // Erklären ObenGL-Statemachine, lowlevel
 // Version 1: seit 1992, elegantes API für die Plattformunabhägige 3D-Programmierung 
@@ -192,6 +195,12 @@ void sendMVP()
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform, konstant fuer alle Eckpunkte
 	glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
+
+
+	// Aufgabe 6
+	glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
 }
 
 int main(void)
@@ -238,7 +247,7 @@ int main(void)
 	// Auf Keyboard-Events reagieren
 	glfwSetKeyCallback(window, key_callback);
 
-	// Dark blue background
+	// white background
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 	 
@@ -251,7 +260,9 @@ int main(void)
 		// ohne Farbe
 	//programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
 		// mit Farbe
-	programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
+	//programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
+	// Aufgabe 6
+	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
 
 	// Shader auch benutzen !
 	glUseProgram(programID);
@@ -262,6 +273,7 @@ int main(void)
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
 	bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
+	// Hallo
 
 	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
 	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
@@ -284,6 +296,26 @@ int main(void)
 		GL_FALSE, // Fixedpoint data normalisieren ?
 		0, // Eckpunkte direkt hintereinander gespeichert
 		(void*)0); // abweichender Datenanfang ? 
+
+	
+	// Aufgabe 6
+	GLuint normalbuffer; // Hier alles analog für Normalen in location == 2
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2); // siehe layout im vertex shader 
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	// Aufgabe 7
+	GLuint uvbuffer; // Hier alles analog für Texturkoordinaten in location == 1 (2 floats u und v!)
+	glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1); // siehe layout im vertex shader 
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	// Load the texture
+	GLuint Texture = loadBMP_custom("mandrill.bmp");
+
 
 // --- Teil Kannenmodell
 
@@ -311,21 +343,48 @@ int main(void)
 		Model = glm::rotate(Model, y_achse, glm::vec3(0.0f, 1.0f, 0.0f));
 		Model = glm::rotate(Model, z_achse, glm::vec3(0.0f, 0.0f, 1.0f));
 
-
+		
 		// Modellierung mit Pfeiltasten
 		Model = glm::rotate(Model, up, glm::vec3(1.0f, 0.0f, 0.0f));
 		Model = glm::rotate(Model, down, glm::vec3(-1.0f, 0.0f, 0.0f));
 		Model = glm::rotate(Model, left, glm::vec3(0.0f, -1.0f, 0.0f));
 		Model = glm::rotate(Model, right, glm::vec3(0.0f, 1.0f, 0.0f));
 
+		// Aufgabe 8
+		glm::mat4 Save = Model;
+		Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
+
 		Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+
+
+		// Aufgabe 6
+		glm::vec3 lightPos = glm::vec3(4, 4, -4);
+		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+
+		// Aufgabe 7
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
+		glBindTexture(GL_TEXTURE_2D, Texture);		// Verbindet die Textur
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
 
 		sendMVP();
 
-		//drawWireCube()
-		//drawCube();
 		glBindVertexArray(VertexArrayIDTeapot);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+		// Aufgabe 8
+		Model = Save;
+		Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+		sendMVP();
+		drawSphere(10, 10);
+
+		// Würfel
+		Model = Save;
+		Model = glm::translate(Model, glm::vec3(-1.5, 0.0, 0.0));
+		Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+		sendMVP();
+		drawCube();
 
 
 		// Swap buffers
@@ -335,6 +394,13 @@ int main(void)
         glfwPollEvents();
 	} 
 
+	// Aufgabe 6
+	glDeleteBuffers(1, &normalbuffer);
+
+	// Aufgabe 7
+	glDeleteBuffers(1, &uvbuffer);
+	glDeleteTextures(1, &Texture);
+	
 	glDeleteBuffers(1, &vertexbuffer);
 
 	glDeleteProgram(programID);
