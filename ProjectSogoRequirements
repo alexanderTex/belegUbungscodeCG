@@ -1,0 +1,12 @@
+Projekt Sogo
+############
+
+- Umsetzung des Spiels Sogo in 3D im Standardformat 4x4x4
+- Setzen der Spielsteine, entsprechend der Spielphysik („Steine fallen von oben nach unten“)
+- optional: Spielfeldvariation in 3x3x3 und 5x5x5
+- Durch Pfeiltasten veränderbare Ansicht des Spielfeldes
+- KI Implementierung bis zur Obergrenze von 1200 Zeilen Quellcode pro Person
+
+Beispielbild:
+https://upload.wikimedia.org/wikipedia/commons/e/e8/Qubic.jpg
+http://www.spielematerial.de/en/sogo-3d-muhle.html
