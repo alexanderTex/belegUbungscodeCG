@@ -1,3 +1,16 @@
+// Dateien zur Abgabe
+//	StandardShading.fragmentshader
+//	StandardShading.vertexshader
+//	teapot.obj
+//	Debug/CGTutorial.exe
+//	mandrill.bmp
+//	eine eigene Dokumentation zur Bedienung
+
+// TO: sftp://uranus.f4.htw-berlin.de/home/tj/public_html/cg/belege/
+
+
+
+
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
@@ -131,7 +144,9 @@ float right = 0;
 float up = 0;
 float down = 0;
 
-
+float firstSeg = 0;
+float secSeg = 0;
+float thSeg = 0;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -175,6 +190,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		down += 10;
 		break;
 
+	case GLFW_KEY_1:
+		firstSeg += 10;
+		break;
+
+	case GLFW_KEY_2:
+		secSeg += 10;
+		break;
+
+	case GLFW_KEY_3:
+		thSeg += 10;
+		break;
+
 	default:
 		break;
 	}
@@ -186,7 +213,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 glm::mat4 Projection;
 glm::mat4 View;
 glm::mat4 Model;
+glm::mat4 Save;
 GLuint programID;
+
 
 void sendMVP()
 {
@@ -201,6 +230,40 @@ void sendMVP()
 	glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
+}
+
+
+// Teilaufgabe 9.1 - Koordinatensystem erzeugen
+void drawCs(float x, float y, float z)
+{
+	Save = Model;
+	Model = glm::scale(Model, glm::vec3(x, y, z));
+	sendMVP();
+	drawCube();
+	Model = Save;
+
+	Save = Model;
+	Model = glm::scale(Model, glm::vec3(y, x, z));
+	sendMVP();
+	drawCube();
+	Model = Save;
+
+	Save = Model;
+	Model = glm::scale(Model, glm::vec3(z, y, x));
+	sendMVP();
+	drawCube();
+	Model = Save;
+}
+
+// Teilaufgabe 9.2 - Koordinatensystem erzeugen
+void drawSeg(float h)
+{
+	Save = Model;
+	Model = glm::translate(Model, glm::vec3(0.0, h / 2, 0.0));
+	Model = glm::scale(Model, glm::vec3(h / 6, h / 2, h / 6));
+	sendMVP();
+	drawSphere(10, 10);
+	Model = Save;
 }
 
 int main(void)
@@ -344,22 +407,27 @@ int main(void)
 		Model = glm::rotate(Model, z_achse, glm::vec3(0.0f, 0.0f, 1.0f));
 
 		
+		/*
 		// Modellierung mit Pfeiltasten
 		Model = glm::rotate(Model, up, glm::vec3(1.0f, 0.0f, 0.0f));
 		Model = glm::rotate(Model, down, glm::vec3(-1.0f, 0.0f, 0.0f));
 		Model = glm::rotate(Model, left, glm::vec3(0.0f, -1.0f, 0.0f));
 		Model = glm::rotate(Model, right, glm::vec3(0.0f, 1.0f, 0.0f));
+		*/
+
+
+		Save = Model;
 
 		// Aufgabe 8
-		glm::mat4 Save = Model;
+		// Kanne
+		Save = Model;
 		Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
-
 		Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
-
+		
 
 		// Aufgabe 6
-		glm::vec3 lightPos = glm::vec3(4, 4, -4);
-		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+		//glm::vec3 lightPos = glm::vec3(4, 4, -4);
+		//glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 
 		// Aufgabe 7
 		// Bind our texture in Texture Unit 0
@@ -373,25 +441,73 @@ int main(void)
 		glBindVertexArray(VertexArrayIDTeapot);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+		Model = Save;
+		// Modellierung mit Pfeiltasten
+
+		Model = glm::rotate(Model, up, glm::vec3(1.0f, 0.0f, 0.0f));
+		Model = glm::rotate(Model, down, glm::vec3(-1.0f, 0.0f, 0.0f));
+		Model = glm::rotate(Model, left, glm::vec3(0.0f, -1.0f, 0.0f));
+		Model = glm::rotate(Model, right, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		drawCs(-0.6,0.01,0.01);
+
+
+		Model = Save;
+		
+		// Erste Segment
+		Model = glm::rotate(Model, firstSeg, glm::vec3(1.0f, 0.0f, 0.0f));
+		drawSeg(0.5);
+
+		// Zweite Segment
+		Model = glm::translate(Model, glm::vec3(0.0, 0.5, 0.0));
+		Model = glm::rotate(Model, secSeg, glm::vec3(1.0f, 0.0f, 0.0f));
+		drawSeg(0.4);
+		drawCs(-0.4, 0.01, 0.01);
+
+		// Dritte Segment
+		Model = glm::translate(Model, glm::vec3(0.0, 0.4, 0.0));
+		Model = glm::rotate(Model, thSeg, glm::vec3(1.0f, 0.0f, 0.0f));
+		drawSeg(0.3);
+		drawCs(-0.2, 0.01, 0.01);
+
+		// Lichtposition an der Spitze des letzten Segments
+		Model = glm::translate(Model, glm::vec3(0.0, 0.3, 0.0));
+		glm::vec4 lightPos = Model * glm::vec4(0, 0, 0, 1);
+		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+
+
+
 		// Aufgabe 8
+		// Kugel
+		/*
 		Model = Save;
 		Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+		// Transformationsmatrizen an den Shader senden
 		sendMVP();
 		drawSphere(10, 10);
+		*/
 
 		// Würfel
+		/*
 		Model = Save;
 		Model = glm::translate(Model, glm::vec3(-1.5, 0.0, 0.0));
 		Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
 		sendMVP();
 		drawCube();
+		*/
 
+		
 
 		// Swap buffers
 		glfwSwapBuffers(window);
 
 		// Poll for and process events 
         glfwPollEvents();
+
+
+		
+
+
 	} 
 
 	// Aufgabe 6

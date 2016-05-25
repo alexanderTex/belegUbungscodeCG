@@ -111,10 +111,10 @@ bool loadOBJ(
 		glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
 
 	    // Für Teddy-Obj-import ohne Normalen und UVs, TJ !!!!!!!!!!!!!!!!!!!!!
-		// glm::vec2 uv = temp_uvs[ uvIndex-1 ];
+		//glm::vec2 uv = temp_uvs[ uvIndex-1 ];
 		glm::vec2 uv = uvIndex ? temp_uvs[ uvIndex-1 ] : glm::vec2(0.0, 0.0);
 		
-		// glm::vec3 normal = temp_normals[ normalIndex-1 ];
+		//glm::vec3 normal = temp_normals[ normalIndex-1 ];
 		glm::vec3 normal = normalIndex ? temp_normals[ normalIndex-1 ] : glm::vec3(0.0, 0.0, 0.0);
 
 		// Put the attributes in buffers

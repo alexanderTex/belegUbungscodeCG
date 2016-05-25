@@ -1,4 +1,4 @@
-
+### Beleuchtung von Objekten
 
 glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
 glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
@@ -6,7 +6,7 @@ glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projectio
 
 ---------------------------------------------------------------------------------------------
 
-
+# Buffer anlegen
 GLuint normalbuffer; // Hier alles analog für Normalen in location == 2
 glGenBuffers(1, &normalbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
