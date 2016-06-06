@@ -1,28 +1,4 @@
-﻿  stdafx.cpp
-  texture.cpp
-  sogoAppOpenGL.cpp
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(351): warning C4305: "Argument": Verkürzung von "double" in "float"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(363): warning C4305: "Argument": Verkürzung von "double" in "float"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(364): warning C4305: "Argument": Verkürzung von "double" in "float"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(369): warning C4305: "Argument": Verkürzung von "double" in "float"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(370): warning C4305: "Argument": Verkürzung von "double" in "float"
-  shader.cpp
-  objloader.cpp
-  objects.cpp
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\objects.cpp(189): warning C4018: "<=": Konflikt zwischen "signed" und "unsigned"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\objects.cpp(199): warning C4018: "<=": Konflikt zwischen "signed" und "unsigned"
-  Code wird generiert...
-glfw3d.lib(context.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(context.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(init.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(init.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(input.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(input.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(monitor.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(monitor.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(window.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(window.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(win32_init.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(win32_init.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(win32_monitor.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(win32_monitor.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(win32_time.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(win32_time.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(win32_tls.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(win32_tls.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(win32_window.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(win32_window.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(winmm_joystick.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(winmm_joystick.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glfw3d.lib(wgl_context.obj) : warning LNK4099: PDB "glfw.pdb" wurde nicht mit "glfw3d.lib(wgl_context.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glfw.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
-glew32sd.lib(glew.obj) : warning LNK4099: PDB "glew_static.pdb" wurde nicht mit "glew32sd.lib(glew.obj)" oder an "Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\glew_static.pdb" gefunden; Objekt wird verknüpft, als ob keine Debuginformationen vorhanden wären.
+﻿  sogoAppOpenGL.cpp
+z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(299): warning C4305: "=": Verkürzung von "double" in "float"
+z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(297): warning C4101: "koord2": Unreferenzierte lokale Variable
   sogoAppOpenGL.vcxproj -> Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\sogoAppOpenGL.exe
