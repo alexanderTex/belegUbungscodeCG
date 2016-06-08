@@ -1,4 +1,2 @@
 ﻿  sogoAppOpenGL.cpp
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(299): warning C4305: "=": Verkürzung von "double" in "float"
-z:\gitprojeke\belegcomputergrafik\sogoappopengl\sogoappopengl\sogoappopengl.cpp(297): warning C4101: "koord2": Unreferenzierte lokale Variable
   sogoAppOpenGL.vcxproj -> Z:\gitProjeke\belegComputerGrafik\sogoAppOpenGL\Debug\sogoAppOpenGL.exe

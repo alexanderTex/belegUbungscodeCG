@@ -1,4 +1,10 @@
 ﻿C:\Program Files (x86)\MSBuild\14.0\bin\Microsoft.Common.CurrentVersion.targets(1610,5): warning : The referenced project 'C:/Users/tj/Documents/OpenGL-tutorial_Binaries/external/GLEW_190.vcxproj' does not exist.
 C:\Program Files (x86)\MSBuild\14.0\bin\Microsoft.Common.CurrentVersion.targets(1610,5): warning : The referenced project 'C:/Users/tj/Documents/OpenGL-tutorial_Binaries/external/GLFW_276.vcxproj' does not exist.
 C:\Program Files (x86)\MSBuild\14.0\bin\Microsoft.Common.CurrentVersion.targets(1610,5): warning : The referenced project 'C:/Users/tj/Documents/OpenGL-tutorial_Binaries/ZERO_CHECK.vcxproj' does not exist.
+  CGTutorial.cpp
+CGTutorial.cpp(452): warning C4305: "Argument": Verkürzung von "double" in "float"
+CGTutorial.cpp(464): warning C4305: "Argument": Verkürzung von "double" in "float"
+CGTutorial.cpp(465): warning C4305: "Argument": Verkürzung von "double" in "float"
+CGTutorial.cpp(470): warning C4305: "Argument": Verkürzung von "double" in "float"
+CGTutorial.cpp(471): warning C4305: "Argument": Verkürzung von "double" in "float"
   CGTutorial.vcxproj -> Z:\gitProjeke\belegComputerGrafik\CGTutorial\Debug\CGTutorial.exe

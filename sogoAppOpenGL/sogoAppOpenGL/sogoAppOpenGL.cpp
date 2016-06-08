@@ -4,6 +4,7 @@
 //#include "stdafx.h"
 
 // Include standard headers
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -113,15 +114,83 @@ void sendMVP()
 	// in the "MVP" uniform, konstant fuer alle Eckpunkte
 	glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
 
-	/*
-	// Aufgabe 6
 	glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
-	*/
 }
+/*
+	Dient zur Darstellung eines 3D Modells. 
+*/
+struct Mesh
+{
+	/*
+		filename	Übergabe der pbj Datei
+	*/
+	Mesh(std::string fileName)
+	{
+		// --- Kannenmodell
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec2> uvs;
+		std::vector<glm::vec3> normals;
+		// Laden der Objektdatei
+		bool res = loadOBJ(fileName.c_str(), vertices, uvs, normals);
+
+		// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
+		// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
+		glGenVertexArrays(1, &VertexArrayID);
+		glBindVertexArray(VertexArrayID);
+
+		// Ein ArrayBuffer speichert Daten zu Eckpunkten (hier xyz bzw. Position)
+		glGenBuffers(1, &vertexbuffer); // Kennung erhalten
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer); // Daten zur Kennung definieren
+													 // Buffer zugreifbar für die Shader machen
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+		// Erst nach glEnableVertexAttribArray kann DrawArrays auf die Daten zugreifen...
+		glEnableVertexAttribArray(0); // siehe layout im vertex shader: location = 0 
+		glVertexAttribPointer(0,  // location = 0 
+			3,  // Datenformat vec3: 3 floats fuer xyz 
+			GL_FLOAT,
+			GL_FALSE, // Fixedpoint data normalisieren ?
+			0, // Eckpunkte direkt hintereinander gespeichert
+			(void*)0); // abweichender Datenanfang ? 
 
 
+					   // Aufgabe 6 // Hier alles analog für Normalen in location == 2
+		glGenBuffers(1, &normalbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+		glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+		glEnableVertexAttribArray(2); // siehe layout im vertex shader 
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Aufgabe 7 // Hier alles analog für Texturkoordinaten in location == 1 (2 floats u und v!)
+		glGenBuffers(1, &uvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+		glEnableVertexAttribArray(1); // siehe layout im vertex shader 
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		vertexCount = vertices.size();
+	}
+
+	virtual ~Mesh()
+	{
+		glDeleteBuffers(1, &vertexbuffer);
+
+		glDeleteBuffers(1, &normalbuffer);
+
+		glDeleteBuffers(1, &uvbuffer);
+	}
+
+	GLuint VertexArrayID;
+
+	GLuint vertexbuffer;
+	GLuint normalbuffer;
+	GLuint uvbuffer;
+
+	int vertexCount;
+
+};
 
 // =========================================================================
 //
@@ -131,7 +200,6 @@ void sendMVP()
 
 int main(void)
 {
-
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -183,17 +251,17 @@ int main(void)
 
 	// Create and compile our GLSL program from the shaders
 	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
+	//programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 
 	// Shader auch benutzen !
 	glUseProgram(programID);
-
+	/*
 	// =========================================================================
 	//
 	//	Kannenmodell
 	//
 	// =========================================================================
 
-	/*
 	// --- Kannenmodell
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
@@ -242,19 +310,18 @@ int main(void)
 	// Load the texture
 	GLuint Texture = loadBMP_custom("mandrill.bmp");
 
+	
+	// --- Teil Kannenmodell
 	*/
 
-	// --- Teil Kannenmodell
+	Mesh Sphere("Sphere.obj");
+	Mesh Cube("Cube.obj");
+	Mesh Kanne("teapot.obj");
+	
 
-
-	GLuint uvbuffer; // Hier alles analog f�r Texturkoordinaten in location == 1 (2 floats u und v!)
-	glGenBuffers(1, &uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	//glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1); // siehe layout im vertex shader
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	// Load the texture
-	GLuint Texture = loadBMP_custom("mandrill.bmp");
+	GLuint TextureAffe = loadBMP_custom("mandrill.bmp");
+	GLuint TextureLoewe = loadBMP_custom("Loewe.jpg"); // kein bmp somit nicht funktionable
 
 	// =========================================================================
 	//
@@ -262,8 +329,17 @@ int main(void)
 	//
 	// =========================================================================
 	
+	//KugelRadius
+	float kugelRad = 1.0f;
+
+	int koord1 = 3;
+
+
 	while (!glfwWindowShouldClose(window))
 	{
+		
+
+
 		// Clear the screen
 		//glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -271,12 +347,19 @@ int main(void)
 		// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 		Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
-		// Camera matrix
+		
+
+		// =========================================================================
+		//
+		//	Cam View
+		//
+		// =========================================================================
 		View = glm::lookAt(glm::vec3(0, 0, -20), // Camera is at (0,0,-5), in World Space
 			glm::vec3(0, 0, 0),  // and looks at the origin
 			glm::vec3(0, 1, 0)); // Head is up (set to 0,-1,0 to look upside-down)
 
-								 // Model matrix : an identity matrix (model will be at the origin)
+						 
+		// Model matrix : an identity matrix (model will be at the origin)
 		Model = glm::mat4(1.0f);
 
 		
@@ -294,56 +377,66 @@ int main(void)
 		//
 		// =========================================================================
 
-		float x, y, z, koord1, koord2;
-		
-		koord1 = 3.1;
-		for (y = 0; y <= koord1; y += koord1/3)
-		{
-			for (x = 0; x <= koord1; x += koord1/3)
-			{
-				for (z = 0; z <= koord1; z += koord1/3)
-				{
-					/*
-					Model = Save;
-					Model = glm::scale(Model, glm::vec3(0.2, 0.2, 0.2));
-					Model = glm::translate(Model, glm::vec3(x, y, z));
-					drawSphere(10, 200);
-					sendMVP();
-					*/
+		int x, y, z;
 
-					Model = Save;
-					Model = glm::translate(Model, glm::vec3(x, y, z));
-					Model = glm::scale(Model, glm::vec3(0.1, 0.5, 0.1));
-					drawCube();
-					sendMVP();
+		// World space offset
+		// Verschiebungsweite
+		float lookAtPoint = (koord1 * kugelRad * 2) / 2;
+		
+		for (y = 0; y <= koord1; y++)
+		{
+			for (x = 0; x <= koord1; x++)
+			{
+				for (z = 0; z <= koord1; z++)
+				{
+					
+					if (x == 3 && z == 3 && y == 3)
+					{
+						Model = Save;
+						// 
+						Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, y * (kugelRad * 2) - lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
+						//
+						//Model = glm::scale(Model, glm::vec3(kugelRad*2, kugelRad*2, kugelRad*2));
+						Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+
+						// Bind our texture in Texture Unit 0
+						glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
+						glBindTexture(GL_TEXTURE_2D, TextureAffe);		// Verbindet die Textur
+																	// Set our "myTextureSampler" sampler to user Texture Unit 0
+						glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+
+						sendMVP();
+						glBindVertexArray(Kanne.VertexArrayID);
+						glDrawArrays(GL_TRIANGLES, 0, Kanne.vertexCount);
+
+						
+					}
+					else
+					{
+						Model = Save;
+						Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, y * (kugelRad * 2) - lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
+						Model = glm::scale(Model, glm::vec3(kugelRad / 5, kugelRad * 2, kugelRad / 5));
+						// Bind our texture in Texture Unit 0
+						glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
+						glBindTexture(GL_TEXTURE_2D, TextureAffe);		// Verbindet die Textur
+																		// Set our "myTextureSampler" sampler to user Texture Unit 0
+						glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+
+						sendMVP();
+						glBindVertexArray(Cube.VertexArrayID);
+						glDrawArrays(GL_TRIANGLES, 0, Cube.vertexCount);
+					}
 				}
+
 			}
 		}
 
-		for (y = 0; y <= koord1; y += koord1 / 3)
-		{
-			for (x = 6; x <= koord1+6; x += koord1 / 3)
-			{
-				for (z = 0; z <= koord1; z += koord1 / 3)
-				{
-				
-					Model = Save;
-					Model = glm::translate(Model, glm::vec3(x, y, z));
-					Model = glm::scale(Model, glm::vec3(0.2, 0.2, 0.2));
-					drawSphere(10, 200);
-					sendMVP();
-				
-					/*
-					Model = Save;
-					Model = glm::translate(Model, glm::vec3(x, y, z));
-					Model = glm::scale(Model, glm::vec3(0.1, 0.5, 0.1));
-					drawCube();
-					sendMVP();
-					*/
-				}
-			}
-		}
+		Model = Save;
 		
+		// Lichtposition an der Spitze des letzten Segments
+		glm::vec4 lightPos = glm::vec4(0, 0, 0, 1);
+		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+
 		// Swap buffers
 		glfwSwapBuffers(window);
 
@@ -351,14 +444,15 @@ int main(void)
 		glfwPollEvents();
 	}
 
+	//glDeleteBuffers(1, &vertexbuffer);
+
 	// Aufgabe 6
 	//glDeleteBuffers(1, &normalbuffer);
 
 	// Aufgabe 7
 	//glDeleteBuffers(1, &uvbuffer);
-	//glDeleteTextures(1, &Texture);
-
-	//glDeleteBuffers(1, &vertexbuffer);
+	glDeleteTextures(1, &TextureAffe);
+	glDeleteTextures(1, &TextureLoewe);	
 
 	glDeleteProgram(programID);
 
