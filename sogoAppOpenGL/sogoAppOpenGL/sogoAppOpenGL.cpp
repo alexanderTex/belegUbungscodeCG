@@ -382,22 +382,46 @@ int main(void)
 		// World space offset
 		// Verschiebungsweite
 		float lookAtPoint = (koord1 * kugelRad * 2) / 2;
-		
-		for (y = 0; y <= koord1; y++)
+
+		glm::mat4 offsetSaves = glm::translate(Model, glm::vec3(0, kugelRad, 0));
+
+		for (x = 0; x <= koord1; x++)
 		{
-			for (x = 0; x <= koord1; x++)
+			for (z = 0; z <= koord1; z++)
 			{
+				Model = Save;
+				
+				Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, -lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
+				Model = glm::scale(Model, glm::vec3(kugelRad * 2, kugelRad /4, kugelRad * 2));
+				// Bind our texture in Texture Unit 0
+				glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
+				glBindTexture(GL_TEXTURE_2D, TextureAffe);		// Verbindet die Textur
+																// Set our "myTextureSampler" sampler to user Texture Unit 0
+				glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+
+				sendMVP();
+				glBindVertexArray(Cube.VertexArrayID);
+				glDrawArrays(GL_TRIANGLES, 0, Cube.vertexCount);
+			}
+		}
+
+		for (y = 0; y <= koord1; y++)
+		{			
+			for (x = 0; x <= koord1; x++)
+			{				
 				for (z = 0; z <= koord1; z++)
 				{
-					
-					if (x == 3 && z == 3 && y == 3)
+					Model = offsetSaves;
+					// 
+					Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, y * (kugelRad * 2) - lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
+
+					if (x == 1 && z == 3 && y == 0 )
 					{
-						Model = Save;
-						// 
-						Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, y * (kugelRad * 2) - lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
-						//
-						//Model = glm::scale(Model, glm::vec3(kugelRad*2, kugelRad*2, kugelRad*2));
-						Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+												
+						
+						Model = glm::scale(Model, glm::vec3(kugelRad*2, kugelRad*2, kugelRad*2));
+						//Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+						
 
 						// Bind our texture in Texture Unit 0
 						glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
@@ -406,15 +430,13 @@ int main(void)
 						glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
 
 						sendMVP();
-						glBindVertexArray(Kanne.VertexArrayID);
-						glDrawArrays(GL_TRIANGLES, 0, Kanne.vertexCount);
+						glBindVertexArray(Sphere.VertexArrayID);
+						glDrawArrays(GL_TRIANGLES, 0, Sphere.vertexCount);
 
 						
 					}
 					else
 					{
-						Model = Save;
-						Model = glm::translate(Model, glm::vec3(x * (kugelRad * 2) - lookAtPoint, y * (kugelRad * 2) - lookAtPoint, z * (kugelRad * 2) - lookAtPoint));
 						Model = glm::scale(Model, glm::vec3(kugelRad / 5, kugelRad * 2, kugelRad / 5));
 						// Bind our texture in Texture Unit 0
 						glActiveTexture(GL_TEXTURE0);				// Die Textturen sind durchnummeriert
@@ -434,7 +456,7 @@ int main(void)
 		Model = Save;
 		
 		// Lichtposition an der Spitze des letzten Segments
-		glm::vec4 lightPos = glm::vec4(0, 0, 0, 1);
+		glm::vec4 lightPos = glm::vec4(8, 3, 0, 1);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 
 		// Swap buffers
